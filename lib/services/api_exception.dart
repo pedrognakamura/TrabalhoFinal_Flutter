@@ -1,5 +1,3 @@
-/// Falhas possíveis ao consultar a API, cada uma com uma mensagem
-/// compreensível para quem usa o app.
 sealed class ApiException implements Exception {
   const ApiException();
 
@@ -10,7 +8,6 @@ sealed class ApiException implements Exception {
   String toString() => '$runtimeType: $message';
 }
 
-/// Sem conexão, DNS falhou ou o servidor não respondeu a tempo.
 class NetworkException extends ApiException {
   const NetworkException({this.timedOut = false});
 
@@ -25,7 +22,6 @@ class NetworkException extends ApiException {
       : 'Verifique sua conexão e tente novamente.';
 }
 
-/// O servidor respondeu, mas com um status diferente de 200.
 class HttpStatusException extends ApiException {
   const HttpStatusException(this.statusCode);
 
@@ -49,7 +45,6 @@ class HttpStatusException extends ApiException {
   }
 }
 
-/// A resposta chegou, mas o corpo não é o JSON esperado.
 class InvalidResponseException extends ApiException {
   const InvalidResponseException();
 

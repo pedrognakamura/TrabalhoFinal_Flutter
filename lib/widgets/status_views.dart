@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import '../services/api_exception.dart';
 import '../theme/app_theme.dart';
 
-/// Cabeçalho "Saborê" com divisória, usado nas abas.
 class BrandHeader extends StatelessWidget {
   const BrandHeader({super.key});
 
@@ -26,7 +25,6 @@ class BrandHeader extends StatelessWidget {
   }
 }
 
-/// Título de seção com subtítulo opcional.
 class SectionTitle extends StatelessWidget {
   const SectionTitle(this.title, {super.key, this.subtitle, this.large = false});
 
@@ -56,7 +54,6 @@ class SectionTitle extends StatelessWidget {
   }
 }
 
-/// Estado vazio ou de erro: ícone num círculo, título, texto e ações.
 class StatusMessage extends StatelessWidget {
   const StatusMessage({
     super.key,
@@ -115,7 +112,6 @@ class StatusMessage extends StatelessWidget {
   }
 }
 
-/// Erro de API com botão "Tentar novamente".
 class ErrorMessage extends StatelessWidget {
   const ErrorMessage({
     super.key,
@@ -143,7 +139,6 @@ class ErrorMessage extends StatelessWidget {
   }
 }
 
-/// Cards cinza no lugar da lista enquanto os dados carregam.
 class LoadingSkeleton extends StatelessWidget {
   const LoadingSkeleton({super.key, required this.message, this.showSearchBar = false});
 

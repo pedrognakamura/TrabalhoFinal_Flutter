@@ -8,10 +8,6 @@ import '../widgets/recipe_card.dart';
 import '../widgets/status_views.dart';
 import 'navigation.dart';
 
-/// RF03 e RF08: pesquisa remota por nome.
-///
-/// A consulta e os resultados ficam no [RecipesController], então abrir os
-/// detalhes e voltar mantém tudo como estava (RF09).
 class SearchScreen extends StatefulWidget {
   const SearchScreen({super.key});
 
@@ -47,7 +43,7 @@ class _SearchScreenState extends State<SearchScreen> with SingleNavigation {
   bool get _busy => _recipes.search is LoadInProgress;
 
   void _submit() {
-    if (_busy) return; // Evita cliques repetidos durante a busca.
+    if (_busy) return;
 
     final query = _field.text.trim();
     if (!_recipes.searchByName(query)) {
@@ -101,7 +97,6 @@ class _SearchScreenState extends State<SearchScreen> with SingleNavigation {
     final query = _recipes.activeQuery;
     final state = _recipes.search;
 
-    // Sem pesquisa ativa: formulário vazio.
     if (query == null) {
       return [
         const SectionTitle('Qual receita você procura?'),

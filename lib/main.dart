@@ -8,8 +8,6 @@ import 'state/recipes_controller.dart';
 import 'theme/app_theme.dart';
 
 void main() {
-  // O carregamento começa aqui, uma única vez, na abertura do app (RF01),
-  // e não a cada reconstrução de tela.
   final recipes = RecipesController(RecipeApi())..loadCatalog();
   final favorites = FavoritesStore();
 

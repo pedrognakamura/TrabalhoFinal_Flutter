@@ -5,17 +5,6 @@ import '../services/api_exception.dart';
 import '../services/recipe_api.dart';
 import 'load_state.dart';
 
-/// Fonte única de verdade da listagem e da pesquisa.
-///
-/// Fica acima de todas as telas (criado em `main`), então a consulta atual e
-/// os resultados sobrevivem quando o usuário abre os detalhes e volta.
-///
-/// Regras de concorrência:
-/// * A listagem não é recarregada se já estiver carregando ou carregada
-///   (a não ser em "tentar novamente").
-/// * Repetir a mesma pesquisa enquanto ela carrega é ignorado.
-/// * Uma pesquisa nova substitui a anterior: cada uma recebe um número de
-///   geração, e respostas de gerações antigas são descartadas.
 class RecipesController extends ChangeNotifier {
   RecipesController(this._api);
 
@@ -26,18 +15,14 @@ class RecipesController extends ChangeNotifier {
   String? _activeQuery;
   int _searchGeneration = 0;
 
-  /// Estado da listagem completa.
   LoadState get catalog => _catalog;
 
-  /// Estado da pesquisa atual (`LoadIdle` quando não há pesquisa).
   LoadState get search => _search;
 
-  /// Termo pesquisado (já aparado), ou `null` quando o usuário está na listagem.
   String? get activeQuery => _activeQuery;
 
   bool get isSearching => _activeQuery != null;
 
-  /// O que a tela de receitas deve mostrar agora.
   LoadState get visible => isSearching ? _search : _catalog;
 
   bool get isBusy => visible is LoadInProgress;
@@ -52,8 +37,6 @@ class RecipesController extends ChangeNotifier {
     notifyListeners();
   }
 
-  /// Inicia uma pesquisa. Retorna `false` (sem fazer nada) quando a consulta,
-  /// depois de aparada, fica vazia.
   bool searchByName(String rawQuery) {
     final query = rawQuery.trim();
     if (query.isEmpty) return false;
@@ -63,7 +46,6 @@ class RecipesController extends ChangeNotifier {
     return true;
   }
 
-  /// Repete a consulta atual: a pesquisa, se houver uma, ou a listagem.
   Future<void> retry() async {
     final query = _activeQuery;
     if (query != null) {
@@ -73,7 +55,6 @@ class RecipesController extends ChangeNotifier {
     }
   }
 
-  /// Sai da pesquisa e volta para a listagem. Respostas pendentes são ignoradas.
   void clearSearch() {
     _searchGeneration++;
     _activeQuery = null;
@@ -88,7 +69,7 @@ class RecipesController extends ChangeNotifier {
     notifyListeners();
 
     final result = await _run(() => _api.searchRecipes(query));
-    if (generation != _searchGeneration) return; // Resposta antiga: descarta.
+    if (generation != _searchGeneration) return;
 
     _search = result;
     notifyListeners();

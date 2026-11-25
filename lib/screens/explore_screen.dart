@@ -7,10 +7,6 @@ import '../widgets/recipe_card.dart';
 import '../widgets/status_views.dart';
 import 'navigation.dart';
 
-/// RF01 e RF02: identidade do app, acesso à pesquisa e listagem de receitas.
-///
-/// O carregamento é iniciado uma única vez em `main()`; esta tela só mostra
-/// o estado atual do [RecipesController].
 class ExploreScreen extends StatefulWidget {
   const ExploreScreen({super.key});
 
@@ -27,8 +23,6 @@ class _ExploreScreenState extends State<ExploreScreen> with SingleNavigation {
     super.dispose();
   }
 
-  /// Abre a tela de pesquisa. Com texto, já pesquisa; sem texto, abre o
-  /// formulário vazio para o usuário digitar lá.
   void _openSearch() {
     final recipes = AppScope.of(context).recipes;
     final query = _field.text.trim();

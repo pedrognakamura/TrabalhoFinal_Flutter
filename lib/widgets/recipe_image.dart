@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 
 import '../theme/app_theme.dart';
 
-/// Imagem da receita com alternativa visual quando o endereço não existe,
-/// quando ainda está carregando ou quando o download falha.
 class RecipeImage extends StatelessWidget {
   const RecipeImage({
     super.key,

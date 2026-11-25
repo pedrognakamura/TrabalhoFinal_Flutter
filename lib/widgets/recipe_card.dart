@@ -6,7 +6,6 @@ import '../utils/formatters.dart';
 import 'favorite_button.dart';
 import 'recipe_image.dart';
 
-/// Card da listagem: imagem, nome, tempo, dificuldade, nota e favorito.
 class RecipeCard extends StatelessWidget {
   const RecipeCard({super.key, required this.recipe, required this.onTap});
 

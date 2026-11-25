@@ -6,11 +6,9 @@ import '../widgets/recipe_card.dart';
 import '../widgets/status_views.dart';
 import 'navigation.dart';
 
-/// RF05: receitas favoritadas nesta sessão.
 class FavoritesScreen extends StatefulWidget {
   const FavoritesScreen({super.key, required this.onExplore});
 
-  /// Leva o usuário para a aba Explorar.
   final VoidCallback onExplore;
 
   @override

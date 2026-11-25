@@ -1,7 +1,6 @@
 import '../models/recipe.dart';
 import '../services/api_exception.dart';
 
-/// Estado de uma consulta remota de receitas.
 sealed class LoadState {
   const LoadState();
 }

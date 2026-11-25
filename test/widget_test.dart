@@ -23,7 +23,6 @@ http.Response _body(List<Object> recipes) =>
     http.Response.bytes(utf8.encode(jsonEncode({'recipes': recipes})), 200);
 
 Future<FavoritesStore> _startApp(WidgetTester tester) async {
-  // Tela de celular (360 x 800 dp).
   tester.view.physicalSize = const Size(1080, 2400);
   tester.view.devicePixelRatio = 3;
   addTearDown(tester.view.reset);
@@ -54,7 +53,7 @@ void main() {
     await tester.tap(find.text('Classic Margherita Pizza'));
     await tester.pumpAndSettle();
     expect(find.text('Pizza dough'), findsOneWidget);
-    expect(find.text('—'), findsOneWidget); // total sem tempo de cozimento
+    expect(find.text('—'), findsOneWidget);
     expect(find.textContaining('Cozimento: não informado'), findsOneWidget);
     expect(find.text('Não salva'), findsOneWidget);
 

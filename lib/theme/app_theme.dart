@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-/// Paleta do guia visual do Saborê.
 abstract final class AppColors {
   static const background = Color(0xFFF7F4EE);
   static const green = Color(0xFF245B4A);

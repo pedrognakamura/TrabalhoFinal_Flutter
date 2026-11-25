@@ -7,13 +7,6 @@ import '../utils/formatters.dart';
 import '../widgets/favorite_button.dart';
 import '../widgets/recipe_image.dart';
 
-/// RF04: detalhes da receita selecionada.
-///
-/// Decisão: a tela reaproveita o objeto [Recipe] que veio na listagem ou na
-/// pesquisa, em vez de chamar `/recipes/{id}`. As respostas de `/recipes` e
-/// `/recipes/search` já trazem a receita completa (ingredientes, instruções,
-/// tempos etc.), então uma segunda requisição só traria os mesmos dados,
-/// com mais espera e mais um ponto de falha.
 class RecipeDetailScreen extends StatelessWidget {
   const RecipeDetailScreen({super.key, required this.recipe});
 
@@ -87,7 +80,6 @@ class RecipeDetailScreen extends StatelessWidget {
   }
 }
 
-/// Blocos: tempo total, porções (se utilizável) e situação nos favoritos.
 class _StatTiles extends StatelessWidget {
   const _StatTiles({required this.recipe});
 
@@ -161,8 +153,6 @@ class _Tile extends StatelessWidget {
   }
 }
 
-/// Tempos separados (ausente aparece como "não informado", nunca 0),
-/// calorias e tipos de refeição.
 class _TimesAndMeals extends StatelessWidget {
   const _TimesAndMeals({required this.recipe});
 

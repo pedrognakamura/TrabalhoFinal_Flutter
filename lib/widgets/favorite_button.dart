@@ -4,7 +4,6 @@ import '../models/recipe.dart';
 import '../state/app_scope.dart';
 import '../theme/app_theme.dart';
 
-/// Coração que adiciona ou remove a receita dos favoritos da sessão.
 class FavoriteButton extends StatelessWidget {
   const FavoriteButton({super.key, required this.recipe, this.compact = false});
 

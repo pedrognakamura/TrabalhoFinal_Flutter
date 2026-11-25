@@ -6,11 +6,6 @@ import '../theme/app_theme.dart';
 import 'explore_screen.dart';
 import 'favorites_screen.dart';
 
-/// Estrutura com a barra inferior "Explorar" / "Favoritos".
-///
-/// A aba Explorar tem um Navigator próprio: a pesquisa abre dentro dela e a
-/// barra continua visível. As duas abas ficam num IndexedStack, então trocar
-/// de aba não perde a rolagem nem a pesquisa em andamento (RF09).
 class RootShell extends StatefulWidget {
   const RootShell({super.key});
 
@@ -24,14 +19,11 @@ class _RootShellState extends State<RootShell> {
 
   void _select(int index) {
     if (index == 0 && _index == 0) {
-      // Tocar em "Explorar" já estando nela volta ao início da aba.
       _exploreNavigator.currentState?.popUntil((route) => route.isFirst);
     }
     setState(() => _index = index);
   }
 
-  /// Botão voltar do Android: fecha a pesquisa, depois volta para Explorar,
-  /// e só então sai do app.
   void _handleBack(bool didPop, Object? result) {
     if (didPop) return;
     if (_index != 0) {

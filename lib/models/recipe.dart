@@ -1,9 +1,3 @@
-/// Receita vinda da API DummyJSON.
-///
-/// A conversão a partir do JSON é tolerante: campos ausentes ou com tipo
-/// inesperado viram `null` (ou lista vazia) em vez de quebrar o app. Só o
-/// [id] é obrigatório, pois é a identidade estável usada na seleção e para
-/// evitar favoritos duplicados.
 class Recipe {
   const Recipe({
     required this.id,
@@ -22,27 +16,21 @@ class Recipe {
     this.tags = const [],
   });
 
-  /// Nome usado quando a API não envia um nome utilizável.
   static const fallbackName = 'Receita sem nome';
 
   final int id;
   final String name;
   final List<String> ingredients;
 
-  /// Passos na mesma ordem em que a API os envia.
   final List<String> instructions;
   final String? image;
 
-  /// `null` significa "não informado", e não zero.
   final int? prepTimeMinutes;
 
-  /// `null` significa "não informado", e não zero.
   final int? cookTimeMinutes;
 
-  /// Só tem valor quando é um número positivo, ou seja, utilizável.
   final int? servings;
 
-  /// Mantido como [num]: a API pode mandar `4.6` ou `5`.
   final num? rating;
   final List<String> mealType;
   final String? cuisine;
@@ -50,7 +38,6 @@ class Recipe {
   final int? caloriesPerServing;
   final List<String> tags;
 
-  /// Tempo total, calculado só quando os dois tempos foram informados.
   int? get totalTimeMinutes {
     final prep = prepTimeMinutes;
     final cook = cookTimeMinutes;
@@ -58,8 +45,6 @@ class Recipe {
     return prep + cook;
   }
 
-  /// Converte um item JSON. Retorna `null` quando o item não é um objeto ou
-  /// não tem um `id` válido, para que um item ruim não derrube a lista toda.
   static Recipe? tryParse(Object? json) {
     if (json is! Map) return null;
     final id = _asInt(json['id']);
@@ -111,7 +96,6 @@ class Recipe {
     final number = _asNum(value);
     if (number == null || !number.isFinite) return null;
     if (number is int) return number;
-    // Aceita 15.0, mas rejeita 15.5 em vez de arredondar silenciosamente.
     return number == number.truncateToDouble() ? number.toInt() : null;
   }
 
@@ -120,7 +104,6 @@ class Recipe {
     return (number != null && number >= 0) ? number : null;
   }
 
-  /// Aceita uma lista ou uma String solta (ex.: `mealType: "Dinner"`).
   static List<String> _asStringList(Object? value) {
     if (value is String) {
       final single = _asString(value);

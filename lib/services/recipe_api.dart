@@ -7,10 +7,6 @@ import 'package:http/http.dart' as http;
 import '../models/recipe.dart';
 import 'api_exception.dart';
 
-/// Cliente da API DummyJSON Recipes (https://dummyjson.com/docs/recipes).
-///
-/// Toda falha vira uma subclasse de [ApiException], para que a interface
-/// trate rede, status HTTP e corpo inválido de forma separada.
 class RecipeApi {
   RecipeApi({http.Client? client, Uri? baseUri, this.timeout = const Duration(seconds: 15)})
       : _client = client ?? http.Client(),
@@ -20,14 +16,12 @@ class RecipeApi {
   final Uri _baseUri;
   final Duration timeout;
 
-  /// Lista completa de receitas. `limit=0` pede todas de uma vez à DummyJSON.
   Future<List<Recipe>> fetchRecipes() {
     return _getRecipeList(
       _baseUri.replace(path: '/recipes', queryParameters: {'limit': '0'}),
     );
   }
 
-  /// Pesquisa remota por nome. A consulta é aparada e não pode ser vazia.
   Future<List<Recipe>> searchRecipes(String query) {
     final trimmed = query.trim();
     if (trimmed.isEmpty) {
@@ -49,7 +43,6 @@ class RecipeApi {
     if (items is! List) throw const InvalidResponseException();
 
     final recipes = items.map(Recipe.tryParse).whereType<Recipe>().toList();
-    // Se veio algo, mas nada pôde ser lido, o corpo não é o esperado.
     if (items.isNotEmpty && recipes.isEmpty) {
       throw const InvalidResponseException();
     }
