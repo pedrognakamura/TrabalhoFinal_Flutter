@@ -41,15 +41,22 @@ void main() {
     expect(recipes.map((r) => r.name), ['Pizza', 'Pão de queijo']);
   });
 
-  test('searchRecipes apara a consulta e usa /recipes/search', () async {
+  test('searchRecipes apara a consulta e filtra a lista pelo nome', () async {
     Uri? called;
-    final api = _apiReturning(_json({'recipes': []}), onRequest: (uri) => called = uri);
+    final api = _apiReturning(
+      _json({
+        'recipes': [
+          {'id': 1, 'name': 'Pizza'},
+          {'id': 2, 'name': 'Pão de queijo'},
+        ],
+      }),
+      onRequest: (uri) => called = uri,
+    );
 
-    final recipes = await api.searchRecipes('  pizza  ');
+    final recipes = await api.searchRecipes('  PÃO  ');
 
-    expect(recipes, isEmpty);
-    expect(called!.path, '/recipes/search');
-    expect(called!.queryParameters['q'], 'pizza');
+    expect(called!.path, '/recipes');
+    expect(recipes.map((r) => r.name), ['Pão de queijo']);
   });
 
   test('searchRecipes recusa consulta vazia sem chamar a rede', () {

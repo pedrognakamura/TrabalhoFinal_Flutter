@@ -2,13 +2,18 @@ import 'package:flutter/material.dart';
 
 import 'screens/root_shell.dart';
 import 'services/recipe_api.dart';
+import 'services/recipe_translations.dart';
 import 'state/app_scope.dart';
 import 'state/favorites_store.dart';
 import 'state/recipes_controller.dart';
 import 'theme/app_theme.dart';
 
-void main() {
-  final recipes = RecipesController(RecipeApi())..loadCatalog();
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  final translations = await RecipeTranslations.load();
+
+  final recipes = RecipesController(RecipeApi(translations: translations))
+    ..loadCatalog();
   final favorites = FavoritesStore();
 
   runApp(SaboreApp(recipes: recipes, favorites: favorites));

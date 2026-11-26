@@ -12,7 +12,7 @@ Trabalho final da disciplina de Flutter. O objetivo é aplicar a um domínio nov
 |---|---|
 | **RF01 · Tela principal** | Aba **Explorar** com a marca "Saborê", campo **Buscar pelo nome** e botão **Buscar receitas** logo no topo, seguidos da lista. O carregamento das receitas começa na abertura do app, em `main()`. A navegação principal é a barra inferior **Explorar / Favoritos**. |
 | **RF02 · Listagem** | "Receitas disponíveis" em lista rolável. Cada card mostra imagem, nome, tempo total, dificuldade, nota (ex.: "4,6 / 5") e coração. Quando a imagem não existe ou falha ao carregar, aparece um ícone no lugar. Nomes longos são cortados em 2 linhas no card e aparecem inteiros nos detalhes. |
-| **RF03 · Pesquisa** | Tela **Pesquisar receitas** com busca remota em `/recipes/search?q=`. A consulta é aparada (`trim`). Uma consulta vazia é recusada e o campo mostra em vermelho "Digite um nome para pesquisar.". Nos resultados há **Limpar pesquisa**; sem resultados, há **Ver todas as receitas**. |
+| **RF03 · Pesquisa** | Tela **Pesquisar receitas** com busca **em português ou em inglês**, sem diferenciar maiúsculas nem acentos (ex.: "frango", "muçarela" ou "mucarela", "pizza"). A busca é feita sobre a lista traduzida (veja *Tradução para português*). A consulta é aparada (`trim`). Uma consulta vazia é recusada e o campo mostra em vermelho "Digite um nome para pesquisar.". Nos resultados há **Limpar pesquisa**; sem resultados, há **Ver todas as receitas**. |
 | **RF04 · Detalhes** | Imagem, nome, culinária, dificuldade e nota. Blocos com **tempo total**, **porções** e situação nos **favoritos**. Abaixo vêm preparo e cozimento separados, calorias, tipo de refeição, ingredientes e passos numerados na ordem original. A tela inteira rola, o que garante a leitura de conteúdo longo. |
 | **RF05 · Favoritos** | Coração na lista e nos detalhes. Os favoritos são guardados por `id`, sem duplicatas, durante a sessão. A aba **Favoritos** lista as receitas salvas, e a barra inferior mostra um contador. |
 | **RF06 · Carregamento** | Cards "esqueleto" com a mensagem "Carregando receitas…". O botão **Pesquisar** fica desabilitado enquanto a busca carrega, e toques repetidos num item não abrem a mesma tela duas vezes. |
@@ -25,7 +25,14 @@ O layout segue o guia visual de telas fornecido: fundo creme, verde-escuro como 
 ## Decisões técnicas
 
 ### Detalhes: reaproveitamento do objeto da lista
-As respostas de `/recipes` e `/recipes/search` **já trazem a receita completa**: ingredientes, instruções, tempos, porções, avaliação e assim por diante. Por isso a tela de detalhes **reaproveita o objeto `Recipe` recebido na listagem ou na pesquisa** e não chama `/recipes/{id}`. Uma segunda requisição traria os mesmos dados, com mais espera e mais um ponto de falha.
+A resposta de `/recipes` **já traz a receita completa**: ingredientes, instruções, tempos, porções, avaliação e assim por diante. Por isso a tela de detalhes **reaproveita o objeto `Recipe` recebido na listagem ou na pesquisa** e não chama `/recipes/{id}`. Uma segunda requisição traria os mesmos dados, com mais espera e mais um ponto de falha.
+
+### Tradução para português
+A DummyJSON só responde em inglês. Para o app inteiro ficar em português, as receitas são traduzidas **depois** de lidas da API:
+- `assets/translations/receitas_pt.json` guarda **nome, ingredientes e modo de preparo** das 50 receitas, indexados pelo `id`.
+- `RecipeTranslations` (`lib/services/recipe_translations.dart`) carrega esse arquivo na abertura do app e aplica a tradução em cada `Recipe`. A **culinária** (ex.: Italian → Italiana) e o **tipo de refeição** (ex.: Dinner → Jantar) são traduzidos por tabelas no mesmo arquivo.
+- Os dados continuam vindo da API; só o texto é trocado. Uma receita sem tradução (ou cuja quantidade de ingredientes/passos não confere com a tradução) permanece em inglês, sem misturar idiomas dentro da lista.
+- **Pesquisa:** o endpoint `/recipes/search` da API não entende português. Por isso `RecipeApi.searchRecipes` baixa a lista, já traduzida, e filtra localmente por nome (em português ou no original) e culinária, ignorando acentos e maiúsculas (`lib/utils/text_search.dart`). Todas as palavras digitadas precisam aparecer.
 
 ### Requisições e validação
 `RecipeApi` (`lib/services/recipe_api.dart`) faz um `GET` assíncrono com timeout de 15 s e:
@@ -61,7 +68,8 @@ lib/
 │   └── recipe.dart               # Modelo e conversão tolerante do JSON
 ├── services/
 │   ├── api_exception.dart        # Erros de rede, de status e de formato
-│   └── recipe_api.dart           # Cliente HTTP da DummyJSON
+│   ├── recipe_api.dart           # Cliente HTTP da DummyJSON e pesquisa
+│   └── recipe_translations.dart  # Tradução das receitas para português
 ├── state/
 │   ├── app_scope.dart            # InheritedWidget com os objetos de estado
 │   ├── favorites_store.dart      # Favoritos da sessão
@@ -77,13 +85,17 @@ lib/
 ├── theme/
 │   └── app_theme.dart            # Cores e estilos do guia visual
 ├── utils/
-│   └── formatters.dart           # Tempo, nota ("4,6 / 5") e dificuldade
+│   ├── formatters.dart           # Tempo, nota ("4,6 / 5") e dificuldade
+│   └── text_search.dart          # Busca sem acento nem maiúsculas
 └── widgets/
     ├── favorite_button.dart      # Coração de favorito
     ├── recipe_card.dart          # Card da lista
     ├── recipe_image.dart         # Imagem com alternativa visual
     └── status_views.dart         # Cabeçalho, esqueleto, erro e vazio
-test/                             # Testes de modelo, API, estado e widget
+assets/
+└── translations/
+    └── receitas_pt.json          # Nome, ingredientes e preparo em português
+test/                             # Testes de modelo, API, tradução, estado e widget
 ```
 
 ## Dependências
@@ -136,4 +148,4 @@ flutter analyze
 flutter test
 ```
 
-Os testes cobrem a leitura tolerante do JSON, os erros da API (rede, status e corpo inválido), a recusa de pesquisa vazia, o descarte de respostas antigas, os favoritos sem duplicatas e os fluxos de tela: Explorar → detalhes → favoritar, pesquisa vazia, com resultado e sem resultado, e favoritos vazios.
+Os testes cobrem a leitura tolerante do JSON, a tradução e a pesquisa em português (com e sem acento), os erros da API (rede, status e corpo inválido), a recusa de pesquisa vazia, o descarte de respostas antigas, os favoritos sem duplicatas e os fluxos de tela: Explorar → detalhes → favoritar, pesquisa vazia, com resultado e sem resultado, e favoritos vazios.

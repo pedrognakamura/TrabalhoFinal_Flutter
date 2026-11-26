@@ -62,10 +62,11 @@ void main() {
 
     test('descarta a resposta de uma pesquisa antiga', () async {
       final slow = Completer<http.Response>();
+      var calls = 0;
       final controller = RecipesController(RecipeApi(
         client: MockClient((request) {
-          final q = request.url.queryParameters['q'];
-          return q == 'lenta' ? slow.future : Future.value(_recipes(['Rápida']));
+          // A primeira pesquisa ('lenta') demora; a segunda responde logo.
+          return ++calls == 1 ? slow.future : Future.value(_recipes(['Rápida']));
         }),
       ));
 

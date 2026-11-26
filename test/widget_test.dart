@@ -28,11 +28,7 @@ Future<FavoritesStore> _startApp(WidgetTester tester) async {
   addTearDown(tester.view.reset);
 
   final api = RecipeApi(
-    client: MockClient((request) async {
-      final q = request.url.queryParameters['q'];
-      if (q == null || q.toLowerCase().contains('pizza')) return _body([_pizza]);
-      return _body([]);
-    }),
+    client: MockClient((request) async => _body([_pizza])),
   );
   final recipes = RecipesController(api)..loadCatalog();
   final favorites = FavoritesStore();

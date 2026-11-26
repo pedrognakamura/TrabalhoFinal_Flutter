@@ -1,3 +1,5 @@
+import '../utils/text_search.dart';
+
 class Recipe {
   const Recipe({
     required this.id,
@@ -14,12 +16,21 @@ class Recipe {
     this.difficulty,
     this.caloriesPerServing,
     this.tags = const [],
+    this.originalName,
+    this.originalCuisine,
   });
 
   static const fallbackName = 'Receita sem nome';
 
   final int id;
   final String name;
+
+  /// Nome em inglês, guardado quando [name] é uma tradução. Serve para a
+  /// pesquisa também encontrar quem digita o nome original.
+  final String? originalName;
+
+  /// Culinária em inglês, guardada quando [cuisine] é uma tradução.
+  final String? originalCuisine;
   final List<String> ingredients;
 
   final List<String> instructions;
@@ -43,6 +54,44 @@ class Recipe {
     final cook = cookTimeMinutes;
     if (prep == null || cook == null) return null;
     return prep + cook;
+  }
+
+  /// Pesquisa por nome (em português ou no original) e por culinária, sem
+  /// diferenciar maiúsculas nem acentos. Todas as palavras precisam aparecer.
+  bool matchesQuery(String query) {
+    final haystack = [name, originalName, cuisine, originalCuisine]
+        .whereType<String>()
+        .join(' ');
+    return matchesAllWords(haystack, query);
+  }
+
+  Recipe copyWith({
+    String? name,
+    String? originalName,
+    List<String>? ingredients,
+    List<String>? instructions,
+    String? cuisine,
+    String? originalCuisine,
+    List<String>? mealType,
+  }) {
+    return Recipe(
+      id: id,
+      name: name ?? this.name,
+      originalName: originalName ?? this.originalName,
+      ingredients: ingredients ?? this.ingredients,
+      instructions: instructions ?? this.instructions,
+      image: image,
+      prepTimeMinutes: prepTimeMinutes,
+      cookTimeMinutes: cookTimeMinutes,
+      servings: servings,
+      rating: rating,
+      mealType: mealType ?? this.mealType,
+      cuisine: cuisine ?? this.cuisine,
+      originalCuisine: originalCuisine ?? this.originalCuisine,
+      difficulty: difficulty,
+      caloriesPerServing: caloriesPerServing,
+      tags: tags,
+    );
   }
 
   static Recipe? tryParse(Object? json) {
