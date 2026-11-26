@@ -1,6 +1,8 @@
 # Saborê — Aplicativo de Receitas
 
-Aplicativo Flutter para Android que permite **descobrir receitas, pesquisar pelo nome, ler ingredientes e modo de preparo e guardar favoritas**. Os dados vêm da API pública [DummyJSON Recipes](https://dummyjson.com/docs/recipes).
+> **Aviso sobre a execução:** o projeto estava com problemas para rodar no meu computador local (emulador Android). Por isso, **compilei a versão Web apenas para conseguir visualizar o aplicativo** durante o desenvolvimento. **A validação funcional foi feita em Android** (emulador). O projeto está preparado para rodar nas duas plataformas: **Android (plataforma principal)** e **Web (apenas visualização)**.
+
+Aplicativo Flutter, com alvo principal em Android (e versão Web para visualização), que permite **descobrir receitas, pesquisar pelo nome, ler ingredientes e modo de preparo e guardar favoritas**. Os dados vêm da API pública [DummyJSON Recipes](https://dummyjson.com/docs/recipes).
 
 Trabalho final da disciplina de Flutter. O objetivo é aplicar a um domínio novo (receitas) os conceitos vistos em aula: consumo de API REST, tratamento de estados e navegação.
 
@@ -100,7 +102,7 @@ O estado é gerenciado com recursos nativos do Flutter (`ChangeNotifier`, `Inher
 - **Flutter** 3.44.9 (canal stable)
 - **Dart** 3.12.2
 - **Android SDK** 36 (build-tools 36.0.0), Gradle 9.1
-- Plataforma alvo: **Android**
+- Plataforma alvo: **Android** (validada em emulador). **Web** disponível apenas para visualização.
 
 ## Como executar
 
@@ -117,6 +119,9 @@ flutter pub get
 # 3. Rodar no emulador ou no celular conectado
 flutter devices        # lista os dispositivos disponíveis
 flutter run
+
+# Alternativa: rodar no navegador (apenas para visualizar)
+flutter run -d chrome
 
 # Gerar o APK de release (sai em build/app/outputs/flutter-apk/app-release.apk)
 flutter build apk --release
